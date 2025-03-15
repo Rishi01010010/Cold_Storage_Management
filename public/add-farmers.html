@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Farmer</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background color */
+            color: #ffffff; /* Light text color */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333333; /* Darker background for container */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Box shadow for depth */
+        }
+
+        h1 {
+            color: #ffffff; /* White text color for headings */
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #9b9b9b;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #ffffff; /* White label text color */
+            margin-right: 10px;
+        }
+
+        .form-group input {
+            padding: 8px;
+            border: 1px solid #666666; /* Darker border color for inputs */
+            border-radius: 4px;
+            background-color: #444444; /* Darker input background color */
+            color: #ffffff; /* White text color */
+            width: 300px;
+        }
+
+        .form-buttons {
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50; /* Green button color */
+            color: #ffffff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #888888; /* Gray button color */
+        }
+
+        .btn:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        a {
+            color: #ff0000; /* Red link color */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Farmer</h1>
+        <form id="addFarmerForm" class="form">
+            <div class="form-group">
+                <label for="id">Farmer ID:</label>
+                <input type="text" id="id" name="id" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="identity_number">Identity Number:</label>
+                <input type="text" id="identity_number" name="identity_number" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" id="phone_number" name="phone_number">
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address">
+            </div>
+            <div class="form-group">
+                <label for="farm_details">Farm Details:</label>
+                <input type="text" id="farm_details" name="farm_details">
+            </div>
+            <div class="form-group">
+                <label for="production_records">Production Records:</label>
+                <input type="text" id="production_records" name="production_records">
+            </div>
+            <div class="form-group">
+                <label for="equipment_assets">Equipment Assets:</label>
+                <input type="text" id="equipment_assets" name="equipment_assets">
+            </div>
+            <div class="form-group">
+                <label for="land_ownership">Land Ownership:</label>
+                <input type="text" id="land_ownership" name="land_ownership">
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="btn">Add</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.html'">Back</button>
+            </div>
+        </form>
+    </div>
+    <script src="add-farmers.js"></script>
+</body>
+</html>

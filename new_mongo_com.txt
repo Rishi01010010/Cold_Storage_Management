@@ -1,0 +1,1369 @@
+use cold_storage_db
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+db.createCollection("Farmers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "name", "identity_number", "email", "phone_number"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'F001')"
+        },
+        name: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        identity_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+\..+$",
+          description: "Must be a unique string in email format and is required"
+        },
+        phone_number: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        address: {
+          bsonType: "string",
+          description: "Optional string"
+        },
+        farm_details: {
+          bsonType: "string",
+          description: "Optional text"
+        },
+        production_records: {
+          bsonType: "string",
+          description: "Optional text"
+        },
+        equipment_assets: {
+          bsonType: "string",
+          description: "Optional text"
+        },
+        land_ownership: {
+          bsonType: "string",
+          description: "Optional text"
+        }
+      }
+    }
+  }
+})
+
+-- Create unique indexes
+db.Farmers.createIndex({ identity_number: 1 }, { unique: true })
+db.Farmers.createIndex({ email: 1 }, { unique: true })
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+db.createCollection("Buyers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "name", "identity_number", "email", "phone_number"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'B001')"
+        },
+        name: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        identity_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+\..+$",
+          description: "Must be a unique string in email format and is required"
+        },
+        phone_number: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        address: {
+          bsonType: "string",
+          description: "Optional string"
+        }
+      }
+    }
+  }
+})
+
+-- Create unique indexes
+db.Buyers.createIndex({ identity_number: 1 }, { unique: true })
+db.Buyers.createIndex({ email: 1 }, { unique: true })
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+db.createCollection("StorageUnits", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "storage_number", "capacity", "location", "ownership_status", "temperature", "humidity"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'SU001')"
+        },
+        storage_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required (e.g., 'STG001')"
+        },
+        capacity: {
+          bsonType: "number",
+          minimum: 0,
+          description: "Must be a positive number and is required"
+        },
+        location: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        ownership_status: {
+          enum: ["Owned", "Leased"],
+          description: "Must be either 'Owned' or 'Leased' and is required"
+        },
+        temperature: {
+          bsonType: "number",
+          description: "Must be a number representing Celsius and is required"
+        },
+        humidity: {
+          bsonType: "number",
+          description: "Must be a number representing percentage and is required"
+        },
+        contractid: {
+          bsonType: "string",
+          description: "Optional string referencing Contracts.id"
+        }
+      }
+    }
+  }
+})
+
+-- Create unique indexes
+db.StorageUnits.createIndex({ storage_number: 1 }, { unique: true })
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+db.createCollection("Contracts", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "contract_number", "farmerid", "buyerid", "storage_unitid", "start_date", "end_date", "amount"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'C001')"
+        },
+        contract_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required (e.g., 'CN001')"
+        },
+        farmerid: {
+          bsonType: "string",
+          description: "Must reference Farmers.id and is required"
+        },
+        buyerid: {
+          bsonType: "string",
+          description: "Must reference Buyers.id and is required"
+        },
+        storage_unitid: {
+          bsonType: "string",
+          description: "Must reference StorageUnits.id and is required"
+        },
+        start_date: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        },
+        end_date: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        },
+        terms: {
+          bsonType: "string",
+          description: "Optional text detailing contract terms"
+        },
+        amount: {
+          bsonType: "number",
+          minimum: 0,
+          description: "Must be a positive number and is required"
+        }
+      }
+    }
+  }
+})
+
+-- Create unique indexes
+db.Contracts.createIndex({ contract_number: 1 }, { unique: true })
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+db.createCollection("Inventory", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "storage_unitid", "vegetable_name", "quantity", "date_stored", "expiry_date"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'I001')"
+        },
+        storage_unitid: {
+          bsonType: "string",
+          description: "Must reference StorageUnits.id and is required"
+        },
+        vegetable_name: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        variety: {
+          bsonType: "string",
+          description: "Optional string specifying variety"
+        },
+        quantity: {
+          bsonType: "number",
+          minimum: 0,
+          description: "Must be a positive number and is required"
+        },
+        date_stored: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        },
+        expiry_date: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        }
+      }
+    }
+  }
+})
+
+-- Create unique indexes if needed (e.g., unique inventoryid)
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+db.Farmers.insertMany([
+  {
+    id: "F001",
+    name: "John Doe",
+    identity_number: "IDF123456",
+    email: "john.doe@farm.com",
+    phone_number: "555-0101",
+    address: "123 Farm Lane",
+    farm_details: "Organic carrot farming",
+    production_records: "Yielded 500 tons in 2023",
+    equipment_assets: "Tractors, Harvesters",
+    land_ownership: "Owned"
+  },
+  {
+    id: "F002",
+    name: "Jane Smith",
+    identity_number: "IDF123457",
+    email: "jane.smith@farm.com",
+    phone_number: "555-0102",
+    address: "124 Farm Lane",
+    farm_details: "Hydroponic vegetable production",
+    production_records: "Consistent quality yields",
+    equipment_assets: "Hydroponic systems, Pumps",
+    land_ownership: "Leased"
+  },
+  // Add more farmers up to F010
+  {
+    id: "F010",
+    name: "Oliver Yellow",
+    identity_number: "IDF123465",
+    email: "oliver.yellow@farm.com",
+    phone_number: "555-0110",
+    address: "132 Farm Lane",
+    farm_details: "Integrated farming practices",
+    production_records: "Integrated pest management",
+    equipment_assets: "Automated storage systems, Vehicles",
+    land_ownership: "Leased"
+  }
+])
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+db.Buyers.insertMany([
+  {
+    id: "B001",
+    name: "FreshMart",
+    identity_number: "IDB223456",
+    email: "contact@freshmart.com",
+    phone_number: "555-0201",
+    address: "200 Market Street"
+  },
+  {
+    id: "B002",
+    name: "Healthy Foods Inc.",
+    identity_number: "IDB223457",
+    email: "info@healthyfoods.com",
+    phone_number: "555-0202",
+    address: "201 Market Street"
+  },
+  // Add more buyers up to B010
+  {
+    id: "B010",
+    name: "GreenLeaf",
+    identity_number: "IDB223465",
+    email: "info@greenleafbuyers.com",
+    phone_number: "555-0210",
+    address: "209 Market Street"
+  }
+])
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+db.StorageUnits.insertMany([
+  {
+    id: "SU001",
+    storage_number: "STG001",
+    capacity: 500.00,
+    location: "North Wing",
+    ownership_status: "Owned",
+    temperature: -18.00,
+    humidity: 85.00,
+    contractid: "C001"
+  },
+  {
+    id: "SU002",
+    storage_number: "STG002",
+    capacity: 750.50,
+    location: "South Wing",
+    ownership_status: "Leased",
+    temperature: -20.00,
+    humidity: 80.00,
+    contractid: "C002"
+  },
+  // Add more storage units up to SU010
+  {
+    id: "SU010",
+    storage_number: "STG010",
+    capacity: 950.25,
+    location: "Central Wing",
+    ownership_status: "Leased",
+    temperature: -20.00,
+    humidity: 80.00,
+    contractid: "C010"
+  }
+])
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+db.Contracts.insertMany([
+  {
+    id: "C001",
+    contract_number: "CN001",
+    farmerid: "F001",
+    buyerid: "B001",
+    storage_unitid: "SU001",
+    start_date: ISODate("2024-01-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "Year-long storage agreement",
+    amount: 10000.00
+  },
+  {
+    id: "C002",
+    contract_number: "CN002",
+    farmerid: "F002",
+    buyerid: "B002",
+    storage_unitid: "SU002",
+    start_date: ISODate("2024-02-01"),
+    end_date: ISODate("2024-11-30"),
+    terms: "11-month storage contract",
+    amount: 15000.00
+  },
+  // Add more contracts up to C010
+  {
+    id: "C010",
+    contract_number: "CN010",
+    farmerid: "F010",
+    buyerid: "B010",
+    storage_unitid: "SU010",
+    start_date: ISODate("2024-10-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "3-month short-term contract",
+    amount: 21000.00
+  }
+])
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+db.Inventory.insertMany([
+  {
+    id: "I001",
+    storage_unitid: "SU001",
+    vegetable_name: "Carrot",
+    variety: "Nantes",
+    quantity: 100.00,
+    date_stored: ISODate("2024-01-02"),
+    expiry_date: ISODate("2024-02-02")
+  },
+  {
+    id: "I002",
+    storage_unitid: "SU002",
+    vegetable_name: "Spinach",
+    variety: "Savoy",
+    quantity: 150.50,
+    date_stored: ISODate("2024-02-03"),
+    expiry_date: ISODate("2024-03-03")
+  },
+  // Add more inventory records up to I010
+  {
+    id: "I010",
+    storage_unitid: "SU010",
+    vegetable_name: "Zucchini",
+    variety: "Black Beauty",
+    quantity: 190.25,
+    date_stored: ISODate("2024-10-11"),
+    expiry_date: ISODate("2024-11-11")
+  }
+])
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// View all Farmers
+db.Farmers.find().pretty()
+
+// View all Buyers
+db.Buyers.find().pretty()
+
+// View all Storage Units
+db.StorageUnits.find().pretty()
+
+// View all Contracts
+db.Contracts.find().pretty()
+
+// View all Inventory
+db.Inventory.find().pretty()
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+db.Contracts.aggregate([
+  {
+    $lookup: {
+      from: "Farmers",
+      localField: "farmerid",
+      foreignField: "id",
+      as: "farmer_details"
+    }
+  },
+  {
+    $lookup: {
+      from: "Buyers",
+      localField: "buyerid",
+      foreignField: "id",
+      as: "buyer_details"
+    }
+  },
+  {
+    $lookup: {
+      from: "StorageUnits",
+      localField: "storage_unitid",
+      foreignField: "id",
+      as: "storage_unit_details"
+    }
+  },
+  {
+    $project: {
+      contract_number: 1,
+      start_date: 1,
+      end_date: 1,
+      terms: 1,
+      amount: 1,
+      farmer_details: { $arrayElemAt: ["$farmer_details", 0] },
+      buyer_details: { $arrayElemAt: ["$buyer_details", 0] },
+      storage_unit_details: { $arrayElemAt: ["$storage_unit_details", 0] }
+    }
+  }
+]).pretty()
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+// This example requires using MongoDB's Change Streams with a driver like Node.js
+
+const { MongoClient } = require('mongodb');
+
+async function monitorTemperature() {
+  const uri = "mongodb://localhost:27017";
+  const client = new MongoClient(uri);
+  
+  try {
+    await client.connect();
+    const database = client.db("cold_storage_db");
+    const collection = database.collection("EnvironmentalLogs");
+    
+    const pipeline = [
+      { $match: { 'fullDocument.temperature': { $lt: -25 } } }
+    ];
+    
+    const changeStream = collection.watch(pipeline);
+    
+    changeStream.on("change", (next) => {
+      console.log("ALERT: Temperature out of safe range!", next.fullDocument);
+      // Implement alerting logic here (e.g., send email or SMS)
+    });
+    
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+monitorTemperature();
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// Switch to the database (creates it if it doesn't exist)
+use cold_storage_db
+
+// ==============================
+// Create Farmers Collection
+// ==============================
+db.createCollection("Farmers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "name", "identity_number", "email", "phone_number"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'F001')"
+        },
+        name: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        identity_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+\\..+$",
+          description: "Must be a unique string in email format and is required"
+        },
+        phone_number: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        address: {
+          bsonType: "string",
+          description: "Optional string"
+        },
+        farm_details: {
+          bsonType: "string",
+          description: "Optional text"
+        },
+        production_records: {
+          bsonType: "string",
+          description: "Optional text"
+        },
+        equipment_assets: {
+          bsonType: "string",
+          description: "Optional text"
+        },
+        land_ownership: {
+          bsonType: "string",
+          description: "Optional text"
+        }
+      }
+    }
+  }
+})
+
+// Create Unique Indexes for Farmers
+db.Farmers.createIndex({ identity_number: 1 }, { unique: true })
+db.Farmers.createIndex({ email: 1 }, { unique: true })
+
+// ==============================
+// Create Buyers Collection
+// ==============================
+db.createCollection("Buyers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "name", "identity_number", "email", "phone_number"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'B001')"
+        },
+        name: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        identity_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+\\..+$",
+          description: "Must be a unique string in email format and is required"
+        },
+        phone_number: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        address: {
+          bsonType: "string",
+          description: "Optional string"
+        }
+      }
+    }
+  }
+})
+
+// Create Unique Indexes for Buyers
+db.Buyers.createIndex({ identity_number: 1 }, { unique: true })
+db.Buyers.createIndex({ email: 1 }, { unique: true })
+
+// ==============================
+// Create StorageUnits Collection
+// ==============================
+db.createCollection("StorageUnits", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "storage_number", "capacity", "location", "ownership_status", "temperature", "humidity"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'SU001')"
+        },
+        storage_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required (e.g., 'STG001')"
+        },
+        capacity: {
+          bsonType: "number",
+          minimum: 0,
+          description: "Must be a positive number and is required"
+        },
+        location: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        ownership_status: {
+          enum: ["Owned", "Leased"],
+          description: "Must be either 'Owned' or 'Leased' and is required"
+        },
+        temperature: {
+          bsonType: "number",
+          description: "Must be a number representing Celsius and is required"
+        },
+        humidity: {
+          bsonType: "number",
+          description: "Must be a number representing percentage and is required"
+        },
+        contract_id: {
+          bsonType: "string",
+          description: "Optional string referencing Contracts.id"
+        }
+      }
+    }
+  }
+})
+
+// Create Unique Index for StorageUnits
+db.StorageUnits.createIndex({ storage_number: 1 }, { unique: true })
+
+// ==============================
+// Create Contracts Collection
+// ==============================
+db.createCollection("Contracts", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "contract_number", "farmer_id", "buyer_id", "storage_unit_id", "start_date", "end_date", "amount"],
+      properties: {
+        id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'C001')"
+        },
+        contract_number: {
+          bsonType: "string",
+          description: "Must be a unique string and is required (e.g., 'CN001')"
+        },
+        farmer_id: {
+          bsonType: "string",
+          description: "Must reference Farmers.id and is required"
+        },
+        buyer_id: {
+          bsonType: "string",
+          description: "Must reference Buyers.id and is required"
+        },
+        storage_unit_id: {
+          bsonType: "string",
+          description: "Must reference StorageUnits.id and is required"
+        },
+        start_date: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        },
+        end_date: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        },
+        terms: {
+          bsonType: "string",
+          description: "Optional text detailing contract terms"
+        },
+        amount: {
+          bsonType: "number",
+          minimum: 0,
+          description: "Must be a positive number and is required"
+        }
+      }
+    }
+  }
+})
+
+// Create Unique Index for Contracts
+db.Contracts.createIndex({ contract_number: 1 }, { unique: true })
+
+// ==============================
+// Create Inventory Collection
+// ==============================
+db.createCollection("Inventory", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["inventory_id", "storage_unit_id", "vegetable_name", "quantity", "date_stored", "expiry_date"],
+      properties: {
+        inventory_id: {
+          bsonType: "string",
+          description: "Must be a string and is required (e.g., 'I001')"
+        },
+        storage_unit_id: {
+          bsonType: "string",
+          description: "Must reference StorageUnits.id and is required"
+        },
+        vegetable_name: {
+          bsonType: "string",
+          description: "Must be a string and is required"
+        },
+        variety: {
+          bsonType: "string",
+          description: "Optional string specifying variety"
+        },
+        quantity: {
+          bsonType: "number",
+          minimum: 0,
+          description: "Must be a positive number and is required"
+        },
+        date_stored: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        },
+        expiry_date: {
+          bsonType: "date",
+          description: "Must be a valid date and is required"
+        }
+      }
+    }
+  }
+})
+
+// Create Unique Index for Inventory
+db.Inventory.createIndex({ inventory_id: 1 }, { unique: true })
+
+// ==============================
+// Insert Sample Data into Farmers
+// ==============================
+db.Farmers.insertMany([
+  {
+    id: "F001",
+    name: "John Doe",
+    identity_number: "IDF123456",
+    email: "john.doe@farm.com",
+    phone_number: "555-0101",
+    address: "123 Farm Lane",
+    farm_details: "Organic carrot farming",
+    production_records: "Yielded 500 tons in 2023",
+    equipment_assets: "Tractors, Harvesters",
+    land_ownership: "Owned"
+  },
+  {
+    id: "F002",
+    name: "Jane Smith",
+    identity_number: "IDF123457",
+    email: "jane.smith@farm.com",
+    phone_number: "555-0102",
+    address: "124 Farm Lane",
+    farm_details: "Hydroponic vegetable production",
+    production_records: "Consistent quality yields",
+    equipment_assets: "Hydroponic systems, Pumps",
+    land_ownership: "Leased"
+  },
+  {
+    id: "F003",
+    name: "Jim Brown",
+    identity_number: "IDF123458",
+    email: "jim.brown@farm.com",
+    phone_number: "555-0103",
+    address: "125 Farm Lane",
+    farm_details: "Mixed vegetable cultivation",
+    production_records: "Diverse crop rotation",
+    equipment_assets: "Irrigation systems, Storage tanks",
+    land_ownership: "Owned"
+  },
+  {
+    id: "F004",
+    name: "Jake White",
+    identity_number: "IDF123459",
+    email: "jake.white@farm.com",
+    phone_number: "555-0104",
+    address: "126 Farm Lane",
+    farm_details: "Seasonal farming",
+    production_records: "Peak season excellence",
+    equipment_assets: "Cold storage units, Vehicles",
+    land_ownership: "Leased"
+  },
+  {
+    id: "F005",
+    name: "Lucy Black",
+    identity_number: "IDF123460",
+    email: "lucy.black@farm.com",
+    phone_number: "555-0105",
+    address: "127 Farm Lane",
+    farm_details: "Sustainable farming practices",
+    production_records: "Eco-friendly yields",
+    equipment_assets: "Solar panels, Refrigerators",
+    land_ownership: "Owned"
+  },
+  {
+    id: "F006",
+    name: "Tom Green",
+    identity_number: "IDF123461",
+    email: "tom.green@farm.com",
+    phone_number: "555-0106",
+    address: "128 Farm Lane",
+    farm_details: "Greenhouse vegetable production",
+    production_records: "Year-round production",
+    equipment_assets: "Climate control systems, Racks",
+    land_ownership: "Leased"
+  },
+  {
+    id: "F007",
+    name: "Emily Blue",
+    identity_number: "IDF123462",
+    email: "emily.blue@farm.com",
+    phone_number: "555-0107",
+    address: "129 Farm Lane",
+    farm_details: "Certified organic vegetables",
+    production_records: "Organic certification achieved",
+    equipment_assets: "Organic fertilizers, Freezers",
+    land_ownership: "Owned"
+  },
+  {
+    id: "F008",
+    name: "Robert Grey",
+    identity_number: "IDF123463",
+    email: "robert.grey@farm.com",
+    phone_number: "555-0108",
+    address: "130 Farm Lane",
+    farm_details: "Local vegetable farming",
+    production_records: "Community supported agriculture",
+    equipment_assets: "Irrigation systems, Cold storage",
+    land_ownership: "Leased"
+  },
+  {
+    id: "F009",
+    name: "Nina Purple",
+    identity_number: "IDF123464",
+    email: "nina.purple@farm.com",
+    phone_number: "555-0109",
+    address: "131 Farm Lane",
+    farm_details: "Pesticide-free cultivation",
+    production_records: "Health-focused production",
+    equipment_assets: "Packaging lines, Freezers",
+    land_ownership: "Owned"
+  },
+  {
+    id: "F010",
+    name: "Oliver Yellow",
+    identity_number: "IDF123465",
+    email: "oliver.yellow@farm.com",
+    phone_number: "555-0110",
+    address: "132 Farm Lane",
+    farm_details: "Integrated farming practices",
+    production_records: "Integrated pest management",
+    equipment_assets: "Automated storage systems, Vehicles",
+    land_ownership: "Leased"
+  }
+])
+
+// ==============================
+// Insert Sample Data into Buyers
+// ==============================
+db.Buyers.insertMany([
+  {
+    id: "B001",
+    name: "FreshMart",
+    identity_number: "IDB223456",
+    email: "contact@freshmart.com",
+    phone_number: "555-0201",
+    address: "200 Market Street"
+  },
+  {
+    id: "B002",
+    name: "Healthy Foods Inc.",
+    identity_number: "IDB223457",
+    email: "info@healthyfoods.com",
+    phone_number: "555-0202",
+    address: "201 Market Street"
+  },
+  {
+    id: "B003",
+    name: "VeggieWorld",
+    identity_number: "IDB223458",
+    email: "sales@veggieworld.com",
+    phone_number: "555-0203",
+    address: "202 Market Street"
+  },
+  {
+    id: "B004",
+    name: "GreenBasket",
+    identity_number: "IDB223459",
+    email: "contact@greenbasket.com",
+    phone_number: "555-0204",
+    address: "203 Market Street"
+  },
+  {
+    id: "B005",
+    name: "Organic Hub",
+    identity_number: "IDB223460",
+    email: "info@organichub.com",
+    phone_number: "555-0205",
+    address: "204 Market Street"
+  },
+  {
+    id: "B006",
+    name: "Nature's Choice",
+    identity_number: "IDB223461",
+    email: "sales@natureschoice.com",
+    phone_number: "555-0206",
+    address: "205 Market Street"
+  },
+  {
+    id: "B007",
+    name: "Farmers' Market",
+    identity_number: "IDB223462",
+    email: "support@farmersmarket.com",
+    phone_number: "555-0207",
+    address: "206 Market Street"
+  },
+  {
+    id: "B008",
+    name: "Healthy Harvest",
+    identity_number: "IDB223463",
+    email: "contact@healthyharvest.com",
+    phone_number: "555-0208",
+    address: "207 Market Street"
+  },
+  {
+    id: "B009",
+    name: "PureVeg",
+    identity_number: "IDB223464",
+    email: "pureveg@buyers.com",
+    phone_number: "555-0209",
+    address: "208 Market Street"
+  },
+  {
+    id: "B010",
+    name: "GreenLeaf",
+    identity_number: "IDB223465",
+    email: "info@greenleafbuyers.com",
+    phone_number: "555-0210",
+    address: "209 Market Street"
+  }
+])
+
+// ==============================
+// Insert Sample Data into StorageUnits
+// ==============================
+db.StorageUnits.insertMany([
+  {
+    id: "SU001",
+    storage_number: "STG001",
+    capacity: 500.00,
+    location: "North Wing",
+    ownership_status: "Owned",
+    temperature: -18.00,
+    humidity: 85.00,
+    contract_id: "C001"
+  },
+  {
+    id: "SU002",
+    storage_number: "STG002",
+    capacity: 750.50,
+    location: "South Wing",
+    ownership_status: "Leased",
+    temperature: -20.00,
+    humidity: 80.00,
+    contract_id: "C002"
+  },
+  {
+    id: "SU003",
+    storage_number: "STG003",
+    capacity: 600.75,
+    location: "East Wing",
+    ownership_status: "Owned",
+    temperature: -17.50,
+    humidity: 90.00,
+    contract_id: "C003"
+  },
+  {
+    id: "SU004",
+    storage_number: "STG004",
+    capacity: 800.00,
+    location: "West Wing",
+    ownership_status: "Leased",
+    temperature: -19.00,
+    humidity: 85.00,
+    contract_id: "C004"
+  },
+  {
+    id: "SU005",
+    storage_number: "STG005",
+    capacity: 550.25,
+    location: "Central Wing",
+    ownership_status: "Owned",
+    temperature: -18.50,
+    humidity: 88.00,
+    contract_id: "C005"
+  },
+  {
+    id: "SU006",
+    storage_number: "STG006",
+    capacity: 900.50,
+    location: "North Wing",
+    ownership_status: "Leased",
+    temperature: -20.00,
+    humidity: 80.00,
+    contract_id: "C006"
+  },
+  {
+    id: "SU007",
+    storage_number: "STG007",
+    capacity: 650.00,
+    location: "South Wing",
+    ownership_status: "Owned",
+    temperature: -17.00,
+    humidity: 92.00,
+    contract_id: "C007"
+  },
+  {
+    id: "SU008",
+    storage_number: "STG008",
+    capacity: 700.75,
+    location: "East Wing",
+    ownership_status: "Leased",
+    temperature: -19.50,
+    humidity: 85.00,
+    contract_id: "C008"
+  },
+  {
+    id: "SU009",
+    storage_number: "STG009",
+    capacity: 850.50,
+    location: "West Wing",
+    ownership_status: "Owned",
+    temperature: -18.00,
+    humidity: 87.00,
+    contract_id: "C009"
+  },
+  {
+    id: "SU010",
+    storage_number: "STG010",
+    capacity: 950.25,
+    location: "Central Wing",
+    ownership_status: "Leased",
+    temperature: -20.00,
+    humidity: 80.00,
+    contract_id: "C010"
+  }
+])
+
+// ==============================
+// Insert Sample Data into Contracts
+// ==============================
+db.Contracts.insertMany([
+  {
+    id: "C001",
+    contract_number: "CN001",
+    farmer_id: "F001",
+    buyer_id: "B001",
+    storage_unit_id: "SU001",
+    start_date: ISODate("2024-01-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "Year-long storage agreement",
+    amount: 10000.00
+  },
+  {
+    id: "C002",
+    contract_number: "CN002",
+    farmer_id: "F002",
+    buyer_id: "B002",
+    storage_unit_id: "SU002",
+    start_date: ISODate("2024-02-01"),
+    end_date: ISODate("2024-11-30"),
+    terms: "11-month storage contract",
+    amount: 15000.00
+  },
+  {
+    id: "C003",
+    contract_number: "CN003",
+    farmer_id: "F003",
+    buyer_id: "B003",
+    storage_unit_id: "SU003",
+    start_date: ISODate("2024-03-01"),
+    end_date: ISODate("2024-09-30"),
+    terms: "7-month seasonal contract",
+    amount: 12000.00
+  },
+  {
+    id: "C004",
+    contract_number: "CN004",
+    farmer_id: "F004",
+    buyer_id: "B004",
+    storage_unit_id: "SU004",
+    start_date: ISODate("2024-04-01"),
+    end_date: ISODate("2024-10-31"),
+    terms: "7-month storage agreement",
+    amount: 18000.00
+  },
+  {
+    id: "C005",
+    contract_number: "CN005",
+    farmer_id: "F005",
+    buyer_id: "B005",
+    storage_unit_id: "SU005",
+    start_date: ISODate("2024-05-01"),
+    end_date: ISODate("2024-08-31"),
+    terms: "4-month short-term contract",
+    amount: 13000.00
+  },
+  {
+    id: "C006",
+    contract_number: "CN006",
+    farmer_id: "F006",
+    buyer_id: "B006",
+    storage_unit_id: "SU006",
+    start_date: ISODate("2024-06-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "7-month storage agreement",
+    amount: 20000.00
+  },
+  {
+    id: "C007",
+    contract_number: "CN007",
+    farmer_id: "F007",
+    buyer_id: "B007",
+    storage_unit_id: "SU007",
+    start_date: ISODate("2024-07-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "6-month storage contract",
+    amount: 16000.00
+  },
+  {
+    id: "C008",
+    contract_number: "CN008",
+    farmer_id: "F008",
+    buyer_id: "B008",
+    storage_unit_id: "SU008",
+    start_date: ISODate("2024-08-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "5-month storage agreement",
+    amount: 17000.00
+  },
+  {
+    id: "C009",
+    contract_number: "CN009",
+    farmer_id: "F009",
+    buyer_id: "B009",
+    storage_unit_id: "SU009",
+    start_date: ISODate("2024-09-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "4-month storage contract",
+    amount: 19000.00
+  },
+  {
+    id: "C010",
+    contract_number: "CN010",
+    farmer_id: "F010",
+    buyer_id: "B010",
+    storage_unit_id: "SU010",
+    start_date: ISODate("2024-10-01"),
+    end_date: ISODate("2024-12-31"),
+    terms: "3-month short-term contract",
+    amount: 21000.00
+  }
+])
+
+// ==============================
+// Insert Sample Data into Inventory
+// ==============================
+db.Inventory.insertMany([
+  {
+    inventory_id: "I001",
+    storage_unit_id: "SU001",
+    vegetable_name: "Carrot",
+    variety: "Nantes",
+    quantity: 100.00,
+    date_stored: ISODate("2024-01-02"),
+    expiry_date: ISODate("2024-02-02")
+  },
+  {
+    inventory_id: "I002",
+    storage_unit_id: "SU002",
+    vegetable_name: "Spinach",
+    variety: "Savoy",
+    quantity: 150.50,
+    date_stored: ISODate("2024-02-03"),
+    expiry_date: ISODate("2024-03-03")
+  },
+  {
+    inventory_id: "I003",
+    storage_unit_id: "SU003",
+    vegetable_name: "Broccoli",
+    variety: "Calabrese",
+    quantity: 120.75,
+    date_stored: ISODate("2024-03-04"),
+    expiry_date: ISODate("2024-04-04")
+  },
+  {
+    inventory_id: "I004",
+    storage_unit_id: "SU004",
+    vegetable_name: "Lettuce",
+    variety: "Romaine",
+    quantity: 200.00,
+    date_stored: ISODate("2024-04-05"),
+    expiry_date: ISODate("2024-05-05")
+  },
+  {
+    inventory_id: "I005",
+    storage_unit_id: "SU005",
+    vegetable_name: "Tomato",
+    variety: "Cherry",
+    quantity: 180.25,
+    date_stored: ISODate("2024-05-06"),
+    expiry_date: ISODate("2024-06-06")
+  },
+  {
+    inventory_id: "I006",
+    storage_unit_id: "SU006",
+    vegetable_name: "Cabbage",
+    variety: "Green",
+    quantity: 160.50,
+    date_stored: ISODate("2024-06-07"),
+    expiry_date: ISODate("2024-07-07")
+  },
+  {
+    inventory_id: "I007",
+    storage_unit_id: "SU007",
+    vegetable_name: "Pepper",
+    variety: "Bell",
+    quantity: 140.00,
+    date_stored: ISODate("2024-07-08"),
+    expiry_date: ISODate("2024-08-08")
+  },
+  {
+    inventory_id: "I008",
+    storage_unit_id: "SU008",
+    vegetable_name: "Cauliflower",
+    variety: "Snowball",
+    quantity: 130.75,
+    date_stored: ISODate("2024-08-09"),
+    expiry_date: ISODate("2024-09-09")
+  },
+  {
+    inventory_id: "I009",
+    storage_unit_id: "SU009",
+    vegetable_name: "Beetroot",
+    variety: "Detroit Dark Red",
+    quantity: 170.50,
+    date_stored: ISODate("2024-09-10"),
+    expiry_date: ISODate("2024-10-10")
+  },
+  {
+    inventory_id: "I010",
+    storage_unit_id: "SU010",
+    vegetable_name: "Zucchini",
+    variety: "Black Beauty",
+    quantity: 190.25,
+    date_stored: ISODate("2024-10-11"),
+    expiry_date: ISODate("2024-11-11")
+  }
+])
+
+// ==============================
+// Insert Sample Data into Contracts (Update StorageUnits with Contract IDs)
+// ==============================
+// Note: Contracts have already been inserted and StorageUnits have contract_id fields referencing them
+
+// ==============================
+// Verify Inserted Data
+// ==============================
+
+print("=== Farmers Collection ===")
+printjson(db.Farmers.find().toArray())
+
+print("=== Buyers Collection ===")
+printjson(db.Buyers.find().toArray())
+
+print("=== StorageUnits Collection ===")
+printjson(db.StorageUnits.find().toArray())
+
+print("=== Contracts Collection ===")
+printjson(db.Contracts.find().toArray())
+
+print("=== Inventory Collection ===")
+printjson(db.Inventory.find().toArray())
+
+
+// Verify Inserted Data
+db.Farmers.find().pretty()
+db.Buyers.find().pretty()
+db.StorageUnits.find().pretty()
+db.Contracts.find().pretty()
+db.Inventory.find().pretty()
+

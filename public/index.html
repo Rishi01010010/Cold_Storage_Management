@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction Details</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #34495e;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #ecf0f1;
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn,
+        .add-button,
+        .view-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-button {
+            background-color: #1abc9c;
+        }
+
+        .add-button:hover {
+            background-color: #16a085;
+        }
+
+        .view-button {
+            background-color: #e67e22;
+        }
+
+        .view-button:hover {
+            background-color: #d35400;
+        }
+
+        .btn {
+            background-color: #e74c3c;
+        }
+
+        .btn:hover {
+            background-color: #c0392b;
+        }
+
+        .form {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            background-color: #2c3e50;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+                align-items: flex-start;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            color: #bdc3c7;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 1px solid #7f8c8d;
+            border-radius: 5px;
+            background-color: #34495e;
+            color: #ecf0f1;
+            font-size: 1em;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #7f8c8d;
+        }
+
+        table th {
+            background-color: #1abc9c;
+            color: #ecf0f1;
+        }
+
+        table tr:hover {
+            background-color: #34495e;
+        }
+
+        a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+
+        #deleteContractForm {
+            background-color: transparent;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Contract Details</h1>
+            <div class="header-buttons">
+                <button class="add-button" onclick="window.location.href='/add-contract.html'">Add Contract</button>
+                <button class="add-button" onclick="window.location.href='/add-inventory.html'">Add Inventory</button>
+                <button class="add-button" onclick="window.location.href='/add-farmers.html'">Add Farmer</button>
+                <button class="add-button" onclick="window.location.href='/add-storageUnits.html'">Add Storage Unit</button>
+                <button class="add-button" onclick="window.location.href='/add-buyers.html'">Add Buyer</button>
+                <button class="view-button" id="viewContracts">View Contracts</button>
+                <button class="view-button" id="viewInventories">View Inventories</button>
+                <button class="view-button" id="viewFarmers">View Farmers</button>
+                <button class="view-button" id="viewStorageUnits">View Storage Units</button>
+                <button class="view-button" id="viewBuyers">View Buyers</button>
+                <button class="view-button" id="logout">Logout</button>
+            </div>
+            <form id="deleteContractForm" class="form">
+                <div class="form-group">
+                    <label for="deleteContractId">Contract ID:</label>
+                    <input type="text" id="deleteContractId" name="deleteContractId" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn">Delete Contract</button>
+                </div>
+            </form>
+        </header>
+        <div id="contractsTable" class="table-container"></div>
+        <div id="inventoriesTable" class="table-container" style="display:none;"></div>
+        <div id="farmersTable" class="table-container" style="display:none;"></div>
+        <div id="storageUnitsTable" class="table-container" style="display:none;"></div>
+        <div id="buyersTable" class="table-container" style="display:none;"></div>
+    </div>
+    <script>
+        // Check if the user is authenticated
+        if (!sessionStorage.getItem('authenticated')) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout functionality (Assuming there's a logout button with id 'logout')
+        document.getElementById('logout').addEventListener('click', function () {
+            sessionStorage.removeItem('authenticated');
+            window.location.href = 'login.html';
+        });
+    </script>
+    <script src="scripts.js"></script>
+</body>
+
+</html>

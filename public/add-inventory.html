@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Inventory</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background color */
+            color: #ffffff; /* Light text color */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333333; /* Darker background for container */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Box shadow for depth */
+        }
+
+        h1 {
+            color: #ffffff; /* White text color for headings */
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #9b9b9b;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #ffffff; /* White label text color */
+            margin-right: 10px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 8px;
+            border: 1px solid #666666; /* Darker border color for inputs */
+            border-radius: 4px;
+            background-color: #444444; /* Darker input background color */
+            color: #ffffff; /* White text color */
+            width: 300px; /* Adjust width as needed */
+            max-width: 100%; /* Ensure responsiveness */
+            resize: vertical; /* Allow vertical resizing for textarea */
+        }
+
+        .form-buttons {
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50; /* Green button color */
+            color: #ffffff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #888888; /* Gray button color */
+        }
+
+        .btn:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        a {
+            color: #ff0000; /* Red link color */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Inventory</h1>
+        <form id="addInventoryForm" class="form">
+
+            <div class="form-group">
+                <label for="inventory_id">Inventory ID:</label>
+                <input type="text" id="id" name="id" required>
+            </div>
+            <div class="form-group">
+                <label for="storage_unit_id">Storage Unit ID:</label>
+                <input type="text" id="storage_unit_id" name="storage_unit_id" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="vegetable_name">Vegetable Name:</label>
+                <input type="text" id="vegetable_name" name="vegetable_name">
+            </div>
+
+            <div class="form-group">
+                <label for="variety">Variety:</label>
+                <textarea id="variety" name="variety"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity">
+            </div>
+            
+
+            <div class="form-group">
+                <label for="date_stored">Date Stored:</label>
+                <input type="date" id="date_stored" name="date_stored">
+            </div>
+
+            <div class="form-group">
+                <label for="expiry_date">Expiry Date:</label>
+                <input type="date" id="expiry_date" name="expiry_date">
+            </div>
+
+            <div class="form-group">
+                <label for="buyer_id">Buyer ID:</label>
+                <input type="text" id="buyer_id" name="buyer_id">
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn">Add</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.html'">Back</button>
+            </div>
+        </form>
+    </div>
+    <script src="add-inventory.js"></script>
+</body>
+</html>

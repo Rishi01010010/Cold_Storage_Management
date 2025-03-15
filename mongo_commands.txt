@@ -1,0 +1,719 @@
+use cold_storage_db;
+db.dropDatabase();
+
+db.createCollection("Farmers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "name", "identity_number", "email", "phone_number"],
+      properties: {
+        id: {
+          bsonType: "string"
+        },
+        name: {
+          bsonType: "string"
+        },
+        identity_number: {
+          bsonType: "string"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+\\..+$"
+        },
+        phone_number: {
+          bsonType: "string"
+        },
+        address: {
+          bsonType: "string"
+        },
+        farm_details: {
+          bsonType: "string"
+        },
+        production_records: {
+          bsonType: "string"
+        },
+        equipment_assets: {
+          bsonType: "string"
+        },
+        land_ownership: {
+          bsonType: "string"
+        }
+      }
+    }
+  }
+});
+db.Farmers.createIndex({ identity_number: 1 }, { unique: true });
+db.Farmers.createIndex({ email: 1 }, { unique: true });
+
+db.createCollection("Buyers", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "name", "identity_number", "email", "phone_number"],
+      properties: {
+        id: {
+          bsonType: "string"
+        },
+        name: {
+          bsonType: "string"
+        },
+        identity_number: {
+          bsonType: "string"
+        },
+        email: {
+          bsonType: "string",
+          pattern: "^.+@.+\\..+$"
+        },
+        phone_number: {
+          bsonType: "string"
+        },
+        address: {
+          bsonType: "string"
+        }
+      }
+    }
+  }
+});
+db.Buyers.createIndex({ identity_number: 1 }, { unique: true });
+db.Buyers.createIndex({ email: 1 }, { unique: true });
+
+db.createCollection("StorageUnits", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "storage_number", "capacity", "location", "owner", "ownership_status", "temperature", "humidity"],
+      properties: {
+        id: {
+          bsonType: "string"
+        },
+        storage_number: {
+          bsonType: "string"
+        },
+        capacity: {
+          bsonType: "number",
+          minimum: 0
+        },
+        location: {
+          bsonType: "string"
+        },
+        owner: {
+          bsonType: "string"
+        },
+        ownership_status: {
+          enum: ["Owned", "Leased"]
+        },
+        temperature: {
+          bsonType: "number"
+        },
+        humidity: {
+          bsonType: "number"
+        },
+        contract_id: {
+          bsonType: "string"
+        }
+      }
+    }
+  }
+});
+db.StorageUnits.createIndex({ storage_number: 1 }, { unique: true });
+
+db.createCollection("Contracts", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "contract_number", "farmer_id", "storage_unit_id", "start_date", "end_date", "amount"],
+      properties: {
+        id: {
+          bsonType: "string"
+        },
+        contract_number: {
+          bsonType: "string"
+        },
+        farmer_id: {
+          bsonType: "string"
+        },
+        storage_unit_id: {
+          bsonType: "string"
+        },
+        start_date: {
+          bsonType: "date"
+        },
+        end_date: {
+          bsonType: "date"
+        },
+        terms: {
+          bsonType: "string"
+        },
+        amount: {
+          bsonType: "number",
+          minimum: 0
+        }
+      }
+    }
+  }
+});
+db.Contracts.createIndex({ contract_number: 1 }, { unique: true });
+
+db.createCollection("Inventory", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["id", "storage_unit_id", "vegetable_name", "quantity", "date_stored", "expiry_date", "buyer_id"],
+      properties: {
+        id: {
+          bsonType: "string"
+        },
+        storage_unit_id: {
+          bsonType: "string"
+        },
+        vegetable_name: {
+          bsonType: "string"
+        },
+        variety: {
+          bsonType: "string"
+        },
+        quantity: {
+          bsonType: "number",
+          minimum: 0
+        },
+        date_stored: {
+          bsonType: "date"
+        },
+        expiry_date: {
+          bsonType: "date"
+        },
+        buyer_id: {
+          bsonType: "string"
+        }
+      }
+    }
+  }
+});
+db.Inventory.createIndex({ id: 1 }, { unique: true });
+
+db.Farmers.insertMany([
+  {
+    "id": "F001",
+    "name": "John Doe",
+    "identity_number": "ID1001",
+    "email": "john.doe1@example.com",
+    "phone_number": "555-0101",
+    "address": "123 Farm Lane, Springfield, CountryA",
+    "farm_details": "Organic vegetable farm specializing in tomatoes and cucumbers.",
+    "production_records": "Produced 5000kg of tomatoes and 3000kg of cucumbers in 2023.",
+    "equipment_assets": "Tractor, irrigation system, greenhouse structures.",
+    "land_ownership": "Owned"
+  },
+  {
+    "id": "F002",
+    "name": "Jane Smith",
+    "identity_number": "ID1002",
+    "email": "jane.smith2@example.com",
+    "phone_number": "555-0102",
+    "address": "456 Greenway Blvd, Springfield, CountryA",
+    "farm_details": "Dairy farm with a focus on organic milk production.",
+    "production_records": "Produced 10,000 liters of milk in 2023.",
+    "equipment_assets": "Milking machines, cooling tanks, feed mixers.",
+    "land_ownership": "Leased"
+  },
+  {
+    "id": "F003",
+    "name": "Michael Brown",
+    "identity_number": "ID1003",
+    "email": "michael.brown3@example.com",
+    "phone_number": "555-0103",
+    "address": "789 Country Road, Springfield, CountryA",
+    "farm_details": "Poultry farm specializing in free-range chicken production.",
+    "production_records": "Raised 20,000 chickens in 2023.",
+    "equipment_assets": "Feeding systems, ventilation units, egg processing machines.",
+    "land_ownership": "Owned"
+  },
+  {
+    "id": "F004",
+    "name": "Emily Davis",
+    "identity_number": "ID1004",
+    "email": "emily.davis4@example.com",
+    "phone_number": "555-0104",
+    "address": "321 Orchard Ave, Springfield, CountryA",
+    "farm_details": "Orchard farm focusing on apple and pear varieties.",
+    "production_records": "Harvested 8,000 apples and 5,000 pears in 2023.",
+    "equipment_assets": "Pruning tools, harvesting machines, storage bins.",
+    "land_ownership": "Leased"
+  },
+  {
+    "id": "F005",
+    "name": "William Johnson",
+    "identity_number": "ID1005",
+    "email": "william.johnson5@example.com",
+    "phone_number": "555-0105",
+    "address": "654 Meadow Lane, Springfield, CountryA",
+    "farm_details": "Mixed crop farm cultivating grains and legumes.",
+    "production_records": "Produced 15,000kg of wheat and 7,000kg of lentils in 2023.",
+    "equipment_assets": "Combine harvester, seed drill, irrigation pumps.",
+    "land_ownership": "Owned"
+  },
+  {
+    "id": "F006",
+    "name": "Olivia Martinez",
+    "identity_number": "ID1006",
+    "email": "olivia.martinez6@example.com",
+    "phone_number": "555-0106",
+    "address": "987 Lakeview Drive, Springfield, CountryA",
+    "farm_details": "Fish farming facility specializing in tilapia and catfish.",
+    "production_records": "Produced 50,000kg of tilapia and 30,000kg of catfish in 2023.",
+    "equipment_assets": "Pond aeration systems, feeding equipment, water quality monitors.",
+    "land_ownership": "Leased"
+  },
+  {
+    "id": "F007",
+    "name": "Liam Wilson",
+    "identity_number": "ID1007",
+    "email": "liam.wilson7@example.com",
+    "phone_number": "555-0107",
+    "address": "159 Vineyard Blvd, Springfield, CountryA",
+    "farm_details": "Vineyard producing grapes for wine and table consumption.",
+    "production_records": "Harvested 12,000kg of grapes in 2023.",
+    "equipment_assets": "Harvesting machinery, grape processing equipment, storage tanks.",
+    "land_ownership": "Owned"
+  },
+  {
+    "id": "F008",
+    "name": "Sophia Anderson",
+    "identity_number": "ID1008",
+    "email": "sophia.anderson8@example.com",
+    "phone_number": "555-0108",
+    "address": "753 Pine Street, Springfield, CountryA",
+    "farm_details": "Herbal farm cultivating medicinal and culinary herbs.",
+    "production_records": "Produced 3,000kg of assorted herbs in 2023.",
+    "equipment_assets": "Drying racks, packing machinery, greenhouse setups.",
+    "land_ownership": "Leased"
+  },
+  {
+    "id": "F009",
+    "name": "James Taylor",
+    "identity_number": "ID1009",
+    "email": "james.taylor9@example.com",
+    "phone_number": "555-0109",
+    "address": "852 River Road, Springfield, CountryA",
+    "farm_details": "Bee farm focused on honey and beeswax production.",
+    "production_records": "Produced 2,000 liters of honey and 500kg of beeswax in 2023.",
+    "equipment_assets": "Beekeeping hives, honey extraction machines, storage containers.",
+    "land_ownership": "Owned"
+  },
+  {
+    "id": "F010",
+    "name": "Isabella Thomas",
+    "identity_number": "ID1010",
+    "email": "isabella.thomas10@example.com",
+    "phone_number": "555-0110",
+    "address": "369 Harvest Lane, Springfield, CountryA",
+    "farm_details": "Greenhouse farm cultivating exotic flowers and plants.",
+    "production_records": "Produced 5,000 bouquets of assorted flowers in 2023.",
+    "equipment_assets": "Climate control systems, hydroponic setups, lighting equipment.",
+    "land_ownership": "Leased"
+  }
+]);
+db.Buyers.insertMany([
+  {
+    "id": "B001",
+    "name": "Alice Green",
+    "identity_number": "ID2001",
+    "email": "alice.green1@example.com",
+    "phone_number": "555-0201",
+    "address": "789 Market St, CityX, CountryA"
+  },
+  {
+    "id": "B002",
+    "name": "Bob Harris",
+    "identity_number": "ID2002",
+    "email": "bob.harris2@example.com",
+    "phone_number": "555-0202",
+    "address": "456 Commerce Blvd, CityX, CountryA"
+  },
+  {
+    "id": "B003",
+    "name": "Catherine Lee",
+    "identity_number": "ID2003",
+    "email": "catherine.lee3@example.com",
+    "phone_number": "555-0203",
+    "address": "123 Industrial Way, CityX, CountryA"
+  },
+  {
+    "id": "B004",
+    "name": "David Kim",
+    "identity_number": "ID2004",
+    "email": "david.kim4@example.com",
+    "phone_number": "555-0204",
+    "address": "321 Business Park, CityX, CountryA"
+  },
+  {
+    "id": "B005",
+    "name": "Ella Rodriguez",
+    "identity_number": "ID2005",
+    "email": "ella.rodriguez5@example.com",
+    "phone_number": "555-0205",
+    "address": "654 Retail Lane, CityX, CountryA"
+  },
+  {
+    "id": "B006",
+    "name": "Franklin Walker",
+    "identity_number": "ID2006",
+    "email": "franklin.walker6@example.com",
+    "phone_number": "555-0206",
+    "address": "987 Supply Street, CityX, CountryA"
+  },
+  {
+    "id": "B007",
+    "name": "Grace Young",
+    "identity_number": "ID2007",
+    "email": "grace.young7@example.com",
+    "phone_number": "555-0207",
+    "address": "159 Distribution Ave, CityX, CountryA"
+  },
+  {
+    "id": "B008",
+    "name": "Henry Scott",
+    "identity_number": "ID2008",
+    "email": "henry.scott8@example.com",
+    "phone_number": "555-0208",
+    "address": "753 Logistics Blvd, CityX, CountryA"
+  },
+  {
+    "id": "B009",
+    "name": "Isla Turner",
+    "identity_number": "ID2009",
+    "email": "isla.turner9@example.com",
+    "phone_number": "555-0209",
+    "address": "852 Warehouse Rd, CityX, CountryA"
+  },
+  {
+    "id": "B010",
+    "name": "Jack White",
+    "identity_number": "ID2010",
+    "email": "jack.white10@example.com",
+    "phone_number": "555-0210",
+    "address": "369 Supply Chain St, CityX, CountryA"
+  }
+]);
+db.StorageUnits.insertMany([
+  {
+    "id": "SU001",
+    "storage_number": "STG001",
+    "capacity": 1000,
+    "location": "North Wing, Building A",
+    "owner": "John Doe",
+    "ownership_status": "Owned",
+    "temperature": 4,
+    "humidity": 50
+  },
+  {
+    "id": "SU002",
+    "storage_number": "STG002",
+    "capacity": 800,
+    "location": "East Wing, Building B",
+    "owner": "Jane Smith",
+    "ownership_status": "Leased",
+    "temperature": 5,
+    "humidity": 55
+  },
+  {
+    "id": "SU003",
+    "storage_number": "STG003",
+    "capacity": 1200,
+    "location": "South Wing, Building C",
+    "owner": "Michael Brown",
+    "ownership_status": "Owned",
+    "temperature": 3,
+    "humidity": 60
+  },
+  {
+    "id": "SU004",
+    "storage_number": "STG004",
+    "capacity": 950,
+    "location": "West Wing, Building D",
+    "owner": "Emily Davis",
+    "ownership_status": "Leased",
+    "temperature": 4,
+    "humidity": 52
+  },
+  {
+    "id": "SU005",
+    "storage_number": "STG005",
+    "capacity": 1100,
+    "location": "Central Hall, Building E",
+    "owner": "William Johnson",
+    "ownership_status": "Owned",
+    "temperature": 2,
+    "humidity": 48
+  },
+  {
+    "id": "SU006",
+    "storage_number": "STG006",
+    "capacity": 900,
+    "location": "North Hall, Building F",
+    "owner": "Olivia Martinez",
+    "ownership_status": "Leased",
+    "temperature": 5,
+    "humidity": 55
+  },
+  {
+    "id": "SU007",
+    "storage_number": "STG007",
+    "capacity": 1300,
+    "location": "East Hall, Building G",
+    "owner": "Liam Wilson",
+    "ownership_status": "Owned",
+    "temperature": 3,
+    "humidity": 50
+  },
+  {
+    "id": "SU008",
+    "storage_number": "STG008",
+    "capacity": 750,
+    "location": "South Hall, Building H",
+    "owner": "Sophia Anderson",
+    "ownership_status": "Leased",
+    "temperature": 4,
+    "humidity": 53
+  },
+  {
+    "id": "SU009",
+    "storage_number": "STG009",
+    "capacity": 1000,
+    "location": "West Hall, Building I",
+    "owner": "James Taylor",
+    "ownership_status": "Owned",
+    "temperature": 2,
+    "humidity": 49
+  },
+  {
+    "id": "SU010",
+    "storage_number": "STG010",
+    "capacity": 850,
+    "location": "Central Hall, Building J",
+    "owner": "Isabella Thomas",
+    "ownership_status": "Leased",
+    "temperature": 5,
+    "humidity": 54
+  }
+]);
+db.Contracts.insertMany([
+  {
+    "id": "C001",
+    "contract_number": "CN1001",
+    "farmer_id": "F001",
+    "storage_unit_id": "SU001",
+    "start_date": ISODate("2024-01-01T00:00:00Z"),
+    "end_date": ISODate("2024-12-31T00:00:00Z"),
+    "terms": "Annual storage agreement with monthly reviews.",
+    "amount": 5000
+  },
+  {
+    "id": "C002",
+    "contract_number": "CN1002",
+    "farmer_id": "F002",
+    "storage_unit_id": "SU002",
+    "start_date": ISODate("2024-02-15T00:00:00Z"),
+    "end_date": ISODate("2025-02-14T00:00:00Z"),
+    "terms": "Two-year lease with option to renew.",
+    "amount": 4500
+  },
+  {
+    "id": "C003",
+    "contract_number": "CN1003",
+    "farmer_id": "F003",
+    "storage_unit_id": "SU003",
+    "start_date": ISODate("2024-03-10T00:00:00Z"),
+    "end_date": ISODate("2024-09-09T00:00:00Z"),
+    "terms": "Short-term storage for seasonal crops.",
+    "amount": 3000
+  },
+  {
+    "id": "C004",
+    "contract_number": "CN1004",
+    "farmer_id": "F004",
+    "storage_unit_id": "SU004",
+    "start_date": ISODate("2024-04-05T00:00:00Z"),
+    "end_date": ISODate("2024-10-04T00:00:00Z"),
+    "terms": "Six-month storage agreement with performance incentives.",
+    "amount": 3500
+  },
+  {
+    "id": "C005",
+    "contract_number": "CN1005",
+    "farmer_id": "F005",
+    "storage_unit_id": "SU005",
+    "start_date": ISODate("2024-05-20T00:00:00Z"),
+    "end_date": ISODate("2025-05-19T00:00:00Z"),
+    "terms": "One-year agreement with quarterly payments.",
+    "amount": 4800
+  },
+  {
+    "id": "C006",
+    "contract_number": "CN1006",
+    "farmer_id": "F006",
+    "storage_unit_id": "SU006",
+    "start_date": ISODate("2024-06-25T00:00:00Z"),
+    "end_date": ISODate("2024-12-24T00:00:00Z"),
+    "terms": "Six-month storage with emergency access provisions.",
+    "amount": 3200
+  },
+  {
+    "id": "C007",
+    "contract_number": "CN1007",
+    "farmer_id": "F007",
+    "storage_unit_id": "SU007",
+    "start_date": ISODate("2024-07-30T00:00:00Z"),
+    "end_date": ISODate("2025-01-29T00:00:00Z"),
+    "terms": "Six-month storage with maintenance services included.",
+    "amount": 4000
+  },
+  {
+    "id": "C008",
+    "contract_number": "CN1008",
+    "farmer_id": "F008",
+    "storage_unit_id": "SU008",
+    "start_date": ISODate("2024-08-15T00:00:00Z"),
+    "end_date": ISODate("2024-10-14T00:00:00Z"),
+    "terms": "Two-month storage for seasonal harvest.",
+    "amount": 2000
+  },
+  {
+    "id": "C009",
+    "contract_number": "CN1009",
+    "farmer_id": "F009",
+    "storage_unit_id": "SU009",
+    "start_date": ISODate("2024-09-10T00:00:00Z"),
+    "end_date": ISODate("2025-03-09T00:00:00Z"),
+    "terms": "Six-month storage with temperature control services.",
+    "amount": 4200
+  },
+  {
+    "id": "C010",
+    "contract_number": "CN1010",
+    "farmer_id": "F010",
+    "storage_unit_id": "SU010",
+    "start_date": ISODate("2024-10-01T00:00:00Z"),
+    "end_date": ISODate("2025-04-30T00:00:00Z"),
+    "terms": "Six-month storage with humidity control services.",
+    "amount": 4300
+  }
+]);
+db.Inventory.insertMany([
+  {
+    "id": "I001",
+    "storage_unit_id": "SU001",
+    "vegetable_name": "Tomato",
+    "variety": "Roma",
+    "quantity": 5000,
+    "date_stored": ISODate("2024-01-10T00:00:00Z"),
+    "expiry_date": ISODate("2024-07-10T00:00:00Z"),
+    "buyer_id": "B001"
+  },
+  {
+    "id": "I002",
+    "storage_unit_id": "SU002",
+    "vegetable_name": "Milk",
+    "variety": "Organic Whole",
+    "quantity": 10000,
+    "date_stored": ISODate("2024-02-20T00:00:00Z"),
+    "expiry_date": ISODate("2024-08-20T00:00:00Z"),
+    "buyer_id": "B002"
+  },
+  {
+    "id": "I003",
+    "storage_unit_id": "SU003",
+    "vegetable_name": "Chicken",
+    "variety": "Free-Range",
+    "quantity": 20000,
+    "date_stored": ISODate("2024-03-15T00:00:00Z"),
+    "expiry_date": ISODate("2024-09-15T00:00:00Z"),
+    "buyer_id": "B003"
+  },
+  {
+    "id": "I004",
+    "storage_unit_id": "SU004",
+    "vegetable_name": "Apple",
+    "variety": "Granny Smith",
+    "quantity": 8000,
+    "date_stored": ISODate("2024-04-10T00:00:00Z"),
+    "expiry_date": ISODate("2024-10-10T00:00:00Z"),
+    "buyer_id": "B004"
+  },
+  {
+    "id": "I005",
+    "storage_unit_id": "SU005",
+    "vegetable_name": "Wheat",
+    "variety": "Hard Red",
+    "quantity": 15000,
+    "date_stored": ISODate("2024-05-05T00:00:00Z"),
+    "expiry_date": ISODate("2025-05-05T00:00:00Z"),
+    "buyer_id": "B005"
+  },
+  {
+    "id": "I006",
+    "storage_unit_id": "SU006",
+    "vegetable_name": "Tilapia",
+    "variety": "Oreochromis niloticus",
+    "quantity": 50000,
+    "date_stored": ISODate("2024-06-20T00:00:00Z"),
+    "expiry_date": ISODate("2024-12-20T00:00:00Z"),
+    "buyer_id": "B006"
+  },
+  {
+    "id": "I007",
+    "storage_unit_id": "SU007",
+    "vegetable_name": "Grapes",
+    "variety": "Chardonnay",
+    "quantity": 12000,
+    "date_stored": ISODate("2024-07-25T00:00:00Z"),
+    "expiry_date": ISODate("2025-01-25T00:00:00Z"),
+    "buyer_id": "B007"
+  },
+  {
+    "id": "I008",
+    "storage_unit_id": "SU008",
+    "vegetable_name": "Basil",
+    "variety": "Sweet Basil",
+    "quantity": 3000,
+    "date_stored": ISODate("2024-08-15T00:00:00Z"),
+    "expiry_date": ISODate("2024-10-15T00:00:00Z"),
+    "buyer_id": "B008"
+  },
+  {
+    "id": "I009",
+    "storage_unit_id": "SU009",
+    "vegetable_name": "Honey",
+    "variety": "Wildflower",
+    "quantity": 2000,
+    "date_stored": ISODate("2024-09-10T00:00:00Z"),
+    "expiry_date": ISODate("2025-03-10T00:00:00Z"),
+    "buyer_id": "B009"
+  },
+  {
+    "id": "I010",
+    "storage_unit_id": "SU010",
+    "vegetable_name": "Orchid",
+    "variety": "Phalaenopsis",
+    "quantity": 5000,
+    "date_stored": ISODate("2024-10-05T00:00:00Z"),
+    "expiry_date": ISODate("2025-04-05T00:00:00Z"),
+    "buyer_id": "B010"
+  }
+]);
+
+
+print("=== Farmers Collection ===")
+printjson(db.Farmers.find().toArray())
+
+print("=== Buyers Collection ===")
+printjson(db.Buyers.find().toArray())
+
+print("=== StorageUnits Collection ===")
+printjson(db.StorageUnits.find().toArray())
+
+print("=== Contracts Collection ===")
+printjson(db.Contracts.find().toArray())
+
+print("=== Inventory Collection ===")
+printjson(db.Inventory.find().toArray())

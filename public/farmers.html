@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Details</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background color */
+            color: #ffffff; /* Light text color */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333333; /* Darker background for container */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Box shadow for depth */
+        }
+
+        h1 {
+            color: #ffffff; /* White text color for headings */
+        }
+
+        .details {
+            background-color: #9b9b9b;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .buttons button {
+            padding: 8px 16px;
+            background-color: #4CAF50; /* Green button color */
+            color: #ffffff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .buttons button:last-child {
+            margin-right: 0;
+        }
+
+        .buttons button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        a {
+            color: #ff0000; /* Red link color */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Farmer Details</h1>
+        <div class="details" id="farmerDetails">
+            <!-- Content dynamically inserted via JavaScript -->
+        </div>
+        <div class="buttons">
+            <button onclick="editFarmer()">Edit</button>
+            <button onclick="deleteFarmer()">Delete</button>
+            <button onclick="window.location.href='/index.html'">Back</button>
+        </div>
+    </div>
+    <script src="farmers.js"></script>
+</body>
+</html>

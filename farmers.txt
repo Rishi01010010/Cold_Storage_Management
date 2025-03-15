@@ -1,0 +1,9 @@
+farmers ------ passenger
+
+buyers ------- employee
+
+storageUnits - sea_route
+
+contracts ---- booking
+
+inventory ---- cruise

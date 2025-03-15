@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Contracts</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background color */
+            color: #ffffff; /* Light text color */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333333; /* Darker background for container */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Box shadow for depth */
+        }
+
+        h1 {
+            color: #ffffff; /* White text color for headings */
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #9b9b9b;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #ffffff; /* White label text color */
+            margin-right: 10px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 8px;
+            border: 1px solid #666666; /* Darker border color for inputs */
+            border-radius: 4px;
+            background-color: #444444; /* Darker input background color */
+            color: #ffffff; /* White text color */
+            width: 300px; /* Adjust width as needed */
+            max-width: 100%; /* Ensure responsiveness */
+        }
+
+        .form-buttons {
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50; /* Green button color */
+            color: #ffffff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #888888; /* Gray button color */
+        }
+
+        .btn:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        a {
+            color: #ff0000; /* Red link color */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Contracts</h1>
+        <form id="addContractForm" class="form">
+            <div class="form-group">
+                <label for="id">Contract ID:</label>
+                <input type="text" id="id" name="id" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contract_number">Contract Number:</label>
+                <input type="text" id="contract_number" name="contract_number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="farmer_id">Farmer ID:</label>
+                <input type="text" id="farmer_id" name="farmer_id" required>
+            </div>
+
+            <div class="form-group">
+                <label for="storage_unit_id">Storage Unit ID:</label>
+                <input type="text" id="storage_unit_id" name="storage_unit_id" required>
+            </div>
+
+            <div class="form-group">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="terms">Terms:</label>
+                <input type="text" id="terms" name="terms" required>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="text" id="amount" name="amount" required>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn">Add</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/index.html'">Back</button>
+            </div>
+        </form>
+    </div>
+    <script src="add-contract.js"></script>
+</body>
+</html>

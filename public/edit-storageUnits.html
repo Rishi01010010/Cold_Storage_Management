@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Storage Units</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #1a1a1a; /* Dark background color */
+            color: #ffffff; /* Light text color */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #333333; /* Darker background for container */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Box shadow for depth */
+        }
+
+        h1 {
+            color: #ffffff; /* White text color for headings */
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background-color: #9b9b9b;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #ffffff; /* White label text color */
+            margin-right: 10px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 8px;
+            border: 1px solid #666666; /* Darker border color for inputs */
+            border-radius: 4px;
+            background-color: #444444; /* Darker input background color */
+            color: #ffffff; /* White text color */
+            width: 300px; /* Adjust width as needed */
+            max-width: 100%; /* Ensure responsiveness */
+        }
+
+        .form-buttons {
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50; /* Green button color */
+            color: #ffffff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #888888; /* Gray button color */
+        }
+
+        .btn:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+        a {
+            color: #ff0000; /* Red link color */
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Storage Units</h1>
+        <form id="editForm" class="form">
+            <div class="form-group">
+                <label for="storage_unit_id">Storage Unit ID:</label>
+                <input type="text" id="storage_unit_id" name="storage_unit_id" required>
+            </div>
+            <div class="form-group">
+                <label for="storage_unit_number">Storage Unit Number:</label>
+                <input type="text" id="storage_unit_number" name="storage_unit_number" required>
+            </div>
+            <div class="form-group">
+                <label for="capacity">Capacity:</label>
+                <input type="text" id="capacity" name="capacity" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="owner">Owner:</label>
+                <input type="text" id="owner" name="owner">
+            </div>
+            <div class="form-group">
+                <label for="ownership_Status">Ownership Status:</label>
+                <input type="text" id="ownership_Status" name="ownership_Status">
+            </div>
+            <div class="form-group">
+                <label for="temperature">Temperature:</label>
+                <input id="temperature" name="temperature"></input>
+            </div>
+            <div class="form-group">
+                <label for="humidity">Humidity:</label>
+                <input id="humidity" name="humidity"></input>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn">Update</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/storageUnits.html?id=' + new URLSearchParams(window.location.search).get('id')">Back</button>
+            </div>
+        </form>
+    </div>
+    <script src="edit-storageUnits.js"></script>
+</body>
+</html>
